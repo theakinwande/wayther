@@ -25,25 +25,25 @@ export default function WeatherCard({ weather, location }: WeatherCardProps) {
 
   return (
     <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-8 shadow-2xl border border-white/20 hover:bg-white/15 transition-all duration-300 hover:shadow-purple-500/20">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-        <div>
-          <h2 className="text-3xl font-bold">{location}</h2>
-          <p className="text-xl">{new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+        <div className="text-center lg:text-left">
+          <h2 className="text-2xl sm:text-3xl font-bold">{location}</h2>
+          <p className="text-sm sm:text-xl text-gray-300">{new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
         </div>
-        <div className="flex items-center mt-4 md:mt-0">
-          <div className="text-8xl font-bold bg-gradient-to-b from-white to-blue-200 bg-clip-text text-transparent drop-shadow-lg">
+        <div className="flex items-center justify-center mt-6 lg:mt-0">
+          <div className="text-6xl sm:text-8xl font-bold bg-gradient-to-b from-white to-blue-200 bg-clip-text text-transparent drop-shadow-lg">
             {Math.round(weather.current.temp)}°C
           </div>
-          <div className="ml-6">
+          <div className="ml-4 sm:ml-6">
             <div className="relative">
               <img 
                 src={`https://openweathermap.org/img/wn/${weather.current.weather[0].icon}@2x.png`} 
                 alt={weather.current.weather[0].description}
-                className="w-20 h-20 drop-shadow-lg"
+                className="w-16 h-16 sm:w-20 sm:h-20 drop-shadow-lg"
               />
               <div className="absolute -inset-2 bg-blue-400/20 rounded-full blur-xl"></div>
             </div>
-            <p className="text-xl capitalize font-medium text-blue-100">{weather.current.weather[0].description}</p>
+            <p className="text-base sm:text-xl capitalize font-medium text-blue-100">{weather.current.weather[0].description}</p>
           </div>
         </div>
       </div>
