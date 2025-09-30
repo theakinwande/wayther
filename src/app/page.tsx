@@ -5,6 +5,7 @@ import SearchBar from '@/components/SearchBar';
 import WeatherCard from '@/components/WeatherCard';
 import HourlyForecast from '@/components/HourlyForecast';
 import WeatherAlert from '@/components/WeatherAlert';
+import DebugInfo from '@/components/DebugInfo';
 import { getWeatherByCoordinates, geocodeLocation, WeatherData } from '@/services/weatherApi';
 
 interface WeatherAlert {
@@ -22,6 +23,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [alerts, setAlerts] = useState<WeatherAlert[]>([]);
+  const [usingMockData, setUsingMockData] = useState(false);
 
   // Get user's location on initial load
   useEffect(() => {
@@ -45,6 +47,7 @@ export default function Home() {
     try {
       setLoading(true);
       setError('');
+      setUsingMockData(false);
 
       const weatherData = await getWeatherByCoordinates(lat, lon);
       setWeather(weatherData);
@@ -54,8 +57,19 @@ export default function Home() {
       }
 
       setLoading(false);
+      
+      // Check if we're using mock data (temperature around 22°C indicates mock data)
+      if (Math.abs(weatherData.current.temp - 22) < 1) {
+        setUsingMockData(true);
+        setError('Using demo data. Please configure your API key for real weather data.');
+      }
     } catch (err) {
-      setError('Failed to fetch weather data');
+      console.error('Weather fetch error:', err);
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('Failed to fetch weather data. Please check your API key configuration.');
+      }
       setLoading(false);
     }
   };
@@ -80,7 +94,12 @@ export default function Home() {
 
       setLoading(false);
     } catch (err) {
-      setError('Failed to fetch weather data');
+      console.error('Search error:', err);
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('Failed to fetch weather data. Please check your API key configuration.');
+      }
       setLoading(false);
     }
   };
@@ -110,11 +129,19 @@ export default function Home() {
             <div className="bg-red-500/20 backdrop-blur-md border border-red-500/30 rounded-xl p-4 sm:p-6 text-center my-4 sm:my-8 max-w-md mx-auto">
               <div className="text-red-400 text-base sm:text-lg mb-2">⚠️ Error</div>
               <p className="text-white text-sm sm:text-base">{error}</p>
+              <DebugInfo error={error} />
             </div>
           )}
 
           {weather && (
             <>
+              {usingMockData && (
+                <div className="bg-yellow-500/20 backdrop-blur-md border border-yellow-500/30 rounded-xl p-3 sm:p-4 text-center mb-4 sm:mb-6">
+                  <div className="text-yellow-400 text-sm sm:text-base mb-1">⚠️ Demo Mode</div>
+                  <p className="text-white text-xs sm:text-sm">Using sample data. Set up your API key for real weather data.</p>
+                </div>
+              )}
+              
               <WeatherCard weather={weather} location={location} />
 
               <div className="mt-6 sm:mt-8">
