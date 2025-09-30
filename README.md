@@ -50,7 +50,7 @@ npm install
 
 4. Create a `.env.local` file in the root directory:
 ```bash
-NEXT_PUBLIC_OPENWEATHER_API_KEY=your_api_key_here
+NEXT_PUBLIC_OPENWEATHERMAP_API_KEY=your_api_key_here
 ```
 
 5. Run the development server:
@@ -59,6 +59,19 @@ npm run dev
 ```
 
 6. Open [http://localhost:3000](http://localhost:3000) in your browser
+
+## 🚀 Deployment
+
+### Vercel Deployment
+
+1. Push your code to GitHub
+2. Connect your repository to Vercel
+3. Add environment variable in Vercel dashboard:
+   - **Key**: `NEXT_PUBLIC_OPENWEATHERMAP_API_KEY`
+   - **Value**: Your OpenWeatherMap API key
+4. Deploy!
+
+**Important**: Make sure the environment variable name is exactly `NEXT_PUBLIC_OPENWEATHERMAP_API_KEY` (case-sensitive).
 
 ## 🎨 Design Highlights
 

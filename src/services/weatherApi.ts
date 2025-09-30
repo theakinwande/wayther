@@ -1,5 +1,10 @@
 const API_KEY = process.env.NEXT_PUBLIC_OPENWEATHERMAP_API_KEY;
 
+// Check if API key is configured
+if (!API_KEY) {
+  console.warn('OpenWeatherMap API key is not configured. Please set NEXT_PUBLIC_OPENWEATHERMAP_API_KEY in your environment variables.');
+}
+
 export interface WeatherData {
   current: {
     dt: number;
@@ -46,12 +51,17 @@ export interface GeocodingData {
 
 export async function getWeatherByCoordinates(lat: number, lon: number): Promise<WeatherData> {
   try {
+    if (!API_KEY) {
+      throw new Error('OpenWeatherMap API key is not configured. Please set NEXT_PUBLIC_OPENWEATHERMAP_API_KEY in your environment variables.');
+    }
+    
     const response = await fetch(
       `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`
     );
     
     if (!response.ok) {
-      throw new Error('Failed to fetch weather data');
+      const errorData = await response.json().catch(() => ({ message: 'Unknown error' }));
+      throw new Error(`Failed to fetch weather data: ${errorData.message || response.statusText}`);
     }
     
     const data = await response.json();
@@ -80,12 +90,17 @@ export async function getWeatherByCoordinates(lat: number, lon: number): Promise
 
 export async function geocodeLocation(location: string): Promise<GeocodingData[]> {
   try {
+    if (!API_KEY) {
+      throw new Error('OpenWeatherMap API key is not configured. Please set NEXT_PUBLIC_OPENWEATHERMAP_API_KEY in your environment variables.');
+    }
+    
     const response = await fetch(
       `https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(location)}&limit=5&appid=${API_KEY}`
     );
     
     if (!response.ok) {
-      throw new Error('Failed to geocode location');
+      const errorData = await response.json().catch(() => ({ message: 'Unknown error' }));
+      throw new Error(`Failed to geocode location: ${errorData.message || response.statusText}`);
     }
     
     return await response.json();
