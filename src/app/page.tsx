@@ -1,103 +1,143 @@
-import Image from "next/image";
+'use client';
+
+import { useState, useEffect } from 'react';
+import SearchBar from '@/components/SearchBar';
+import WeatherCard from '@/components/WeatherCard';
+import HourlyForecast from '@/components/HourlyForecast';
+import WeatherAlert from '@/components/WeatherAlert';
+import { getWeatherByCoordinates, geocodeLocation, WeatherData } from '@/services/weatherApi';
+
+interface WeatherAlert {
+  sender_name: string;
+  event: string;
+  start: number;
+  end: number;
+  description: string;
+  tags?: string[];
+}
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [location, setLocation] = useState('');
+  const [weather, setWeather] = useState<WeatherData | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [alerts, setAlerts] = useState<WeatherAlert[]>([]);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+  // Get user's location on initial load
+  useEffect(() => {
+    if (navigator.geolocation) {
+      setLoading(true);
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          fetchWeatherByCoords(position.coords.latitude, position.coords.longitude);
+        },
+        (err) => {
+          setError('Unable to get your location. Please search for a city.');
+          setLoading(false);
+        }
+      );
+    } else {
+      setError('Geolocation is not supported by your browser');
+    }
+  }, []);
+
+  const fetchWeatherByCoords = async (lat: number, lon: number) => {
+    try {
+      setLoading(true);
+      setError('');
+
+      const weatherData = await getWeatherByCoordinates(lat, lon);
+      setWeather(weatherData);
+
+      if (weatherData.alerts) {
+        setAlerts(weatherData.alerts);
+      }
+
+      setLoading(false);
+    } catch (err) {
+      setError('Failed to fetch weather data');
+      setLoading(false);
+    }
+  };
+
+  const handleSearch = async (searchLocation: string) => {
+    if (!searchLocation) return;
+
+    setLocation(searchLocation);
+    setLoading(true);
+    setError('');
+
+    try {
+      const geoData = await geocodeLocation(searchLocation);
+
+      if (geoData && geoData.length > 0) {
+        const { lat, lon, name } = geoData[0];
+        setLocation(name);
+        await fetchWeatherByCoords(lat, lon);
+      } else {
+        setError('Location not found. Please try another search.');
+      }
+
+      setLoading(false);
+    } catch (err) {
+      setError('Failed to fetch weather data');
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
+      <div className="container mx-auto px-4 py-8 max-w-6xl">
+        <header className="mb-12 text-center">
+          <h1 className="text-5xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+            Wayther
+          </h1>
+          <p className="text-gray-300 text-lg mb-8">Your personal weather companion</p>
+          <SearchBar onSearch={handleSearch} />
+        </header>
+
+        <main>
+          {loading && (
+            <div className="flex justify-center items-center my-16">
+              <div className="relative">
+                <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-400 border-t-transparent"></div>
+                <div className="absolute inset-0 animate-ping rounded-full h-16 w-16 border-4 border-purple-400 opacity-20"></div>
+              </div>
+            </div>
+          )}
+
+          {error && (
+            <div className="bg-red-500/20 backdrop-blur-md border border-red-500/30 rounded-xl p-6 text-center my-8 max-w-md mx-auto">
+              <div className="text-red-400 text-lg mb-2">⚠️ Error</div>
+              <p className="text-white">{error}</p>
+            </div>
+          )}
+
+          {weather && (
+            <>
+              <WeatherCard weather={weather} location={location} />
+
+              <div className="mt-8">
+                <h2 className="text-2xl font-semibold mb-4">Hourly Forecast</h2>
+                <HourlyForecast forecast={weather.hourly} />
+              </div>
+
+              {alerts.length > 0 && (
+                <div className="mt-8">
+                  <h2 className="text-2xl font-semibold mb-4">Weather Alerts</h2>
+                  {alerts.map((alert, index) => (
+                    <WeatherAlert key={index} alert={alert} />
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+        </main>
+
+        <footer className="mt-12 text-center text-sm opacity-80">
+          <p>© 2025 Wayther App - Weather data powered by OpenWeatherMap</p>
+        </footer>
+      </div>
     </div>
   );
 }
