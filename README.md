@@ -1,36 +1,115 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Wayther - Modern Weather App
 
-## Getting Started
+A beautiful, modern weather application built with Next.js, featuring a glassmorphism design, real-time weather data, and comprehensive weather information display.
 
-First, run the development server:
+## ✨ Features
 
+- **Modern Glassmorphism Design**: Beautiful translucent cards with backdrop blur effects
+- **Real-time Weather Data**: Powered by OpenWeatherMap API
+- **Comprehensive Weather Information**:
+  - Current temperature in Celsius
+  - Feels-like temperature
+  - Humidity levels
+  - Wind speed in km/h
+  - UV Index with proper capping
+  - Visibility in kilometers
+  - Precipitation likelihood
+  - Hourly forecast
+  - Weather alerts
+- **Friendly Typography**: Uses Inter and Poppins fonts for a modern, approachable look
+- **Responsive Design**: Works perfectly on desktop, tablet, and mobile devices
+- **Custom Scrollbars**: Beautiful gradient scrollbars for enhanced UX
+- **Location Search**: Search weather by city name with autocomplete
+- **Smooth Animations**: Hover effects and transitions throughout
+
+## 🚀 Tech Stack
+
+- **Frontend**: Next.js 15 with App Router
+- **Styling**: Tailwind CSS with custom gradients
+- **Fonts**: Inter & Poppins from Google Fonts
+- **API**: OpenWeatherMap API
+- **Icons**: Weather icons from OpenWeatherMap
+- **Build Tool**: Turbopack for fast development
+
+## 📦 Installation
+
+1. Clone the repository:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repository-url>
+cd wayther
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Get your OpenWeatherMap API key:
+   - Sign up at [OpenWeatherMap](https://openweathermap.org/api)
+   - Get your free API key
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Create a `.env.local` file in the root directory:
+```bash
+NEXT_PUBLIC_OPENWEATHER_API_KEY=your_api_key_here
+```
 
-## Learn More
+5. Run the development server:
+```bash
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+6. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🎨 Design Highlights
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Glassmorphism Cards
+- Semi-transparent backgrounds with backdrop blur
+- Gradient borders and subtle shadows
+- Hover effects with scale transformations
 
-## Deploy on Vercel
+### Color Scheme
+- **Temperature Cards**: Blue to purple gradients
+- **Humidity**: Green to teal gradients  
+- **Wind**: Orange to red gradients
+- **UV Index**: Purple to pink gradients
+- **Visibility**: Cyan to blue gradients
+- **Precipitation**: Indigo to purple gradients
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Custom Features
+- **Custom Scrollbars**: Gradient blue-to-purple scrollbars
+- **Smooth Transitions**: 300ms transitions on all interactive elements
+- **Responsive Grid**: Adaptive layout from 2 to 6 columns
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📱 Responsive Layout
+
+- **Mobile**: 2-column grid for weather stats
+- **Tablet**: 3-column grid for weather stats  
+- **Desktop**: 6-column grid showing all weather information
+
+## 🔧 API Integration
+
+The app integrates with OpenWeatherMap API and converts units appropriately:
+- Temperature: Celsius (metric units)
+- Wind Speed: km/h (converted from m/s)
+- Visibility: Kilometers (converted from meters)
+
+## 🌟 Future Enhancements
+
+- [ ] Dark mode toggle
+- [ ] Weather maps integration
+- [ ] 7-day forecast
+- [ ] Weather notifications
+- [ ] Multiple location saving
+- [ ] Historical weather data
+
+## 📝 License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+---
+
+Built with ❤️ using Next.js and Tailwind CSS
