@@ -5,7 +5,7 @@ import SearchBar from '@/components/SearchBar';
 import WeatherCard from '@/components/WeatherCard';
 import HourlyForecast from '@/components/HourlyForecast';
 import WeatherAlert from '@/components/WeatherAlert';
-import DebugInfo from '@/components/DebugInfo';
+
 import { getWeatherByCoordinates, geocodeLocation, WeatherData } from '@/services/weatherApi';
 
 interface WeatherAlert {
@@ -129,7 +129,7 @@ export default function Home() {
             <div className="bg-red-500/20 backdrop-blur-md border border-red-500/30 rounded-xl p-4 sm:p-6 text-center my-4 sm:my-8 max-w-md mx-auto">
               <div className="text-red-400 text-base sm:text-lg mb-2">⚠️ Error</div>
               <p className="text-white text-sm sm:text-base">{error}</p>
-              <DebugInfo error={error} />
+
             </div>
           )}
 
