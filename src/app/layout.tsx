@@ -14,8 +14,8 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "wayther",
-  description: "weather app for you",
+  title: "ther",
+  description: "her app for you",
 };
 
 export default function RootLayout({
